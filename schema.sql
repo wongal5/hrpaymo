@@ -5,7 +5,11 @@ CREATE DATABASE paymo;
 
 CREATE TABLE USERS (
   id NUMERIC(25) PRIMARY KEY,
+<<<<<<< HEAD
   username varchar(20) NOT NULL,
+=======
+  username varchar(20) UNIQUE NOT NULL,
+>>>>>>> functioning google login calls
   first_name varchar(20) NOT NULL,
   last_name varchar(20) NOT NULL,
   updated_at timestamp DEFAULT CURRENT_TIMESTAMP,
