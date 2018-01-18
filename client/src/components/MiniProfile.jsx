@@ -2,6 +2,9 @@ import React from 'react';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
+import { connect } from 'react-redux';
+import { paymo } from './Reducers';
+// import { balance, userInfo } from './Reducers/Actions.js'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 
 const style = {
@@ -23,19 +26,21 @@ const style = {
   }
 };
 
+
 class MiniProfile extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+  // constructor (props) {
+  //   super(props);
+  // }
 
   render() {
+    console.log('render', this.props)
     return (
       <Paper className='feed-container'>
         <Card>
           <CardHeader
             title={
               <div>
-                <span style={style.title}>{this.props.userInfo.displayName}</span>
+                <span style={style.title}>{this.props.userInfo}</span>
               </div>
             }
             subtitle={
@@ -60,5 +65,14 @@ class MiniProfile extends React.Component {
   }
 }
 
-export default MiniProfile;
+const mapStateToProps = state => {
+  // console.log(state.userInfo.displayName);
+  return {
+    balance: state.balance,
+    userInfo: state.userInfo
+  }
+}
+
+// export default MiniProfile;
+export default connect(mapStateToProps)(MiniProfile);
 

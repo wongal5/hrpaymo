@@ -7,6 +7,10 @@ import axios from 'axios';
 
 // ---------- React-Redux ---------- //
 import { connect } from 'react-redux';
+import { logOut,
+         logIn,
+         balance,
+         userInfo } from './components/Reducers/Actions.js'
 
 // ---------- Material UI ---------- //
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -24,7 +28,7 @@ const muiTheme = getMuiTheme({
   palette: {
     primary1Color: '#3D95CE',
   },
-});
+})
 
 class App extends React.Component {
   constructor(props) {
@@ -33,13 +37,14 @@ class App extends React.Component {
       isLoggedIn: false,
       globalFeed: {},
       userFeed: {},
-      balance: null,
-      userInfo: {},
+      // balance: null,
+      // userInfo: {},
       friends: []
     }
   }
 
   componentWillMount() {
+    console.log('this', this.props)
     this.client_id = '636654108787-tpfoiuolsol40okb92hejj1f3912dc7l.apps.googleusercontent.com';
     gapi.load('auth2', () => {
       // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -50,7 +55,7 @@ class App extends React.Component {
             let idToken = googleAuth.currentUser.get().getAuthResponse().id_token;
               axios.post('/login', {idToken})
                 .then((userId) => {
-                  console.log('userid', userId)
+                  console.log('userid', userId);
                   this.logUserIn(userId.data);
                 })
                 .catch((err) => {
@@ -144,9 +149,7 @@ class App extends React.Component {
   getBalance(userId) {
     axios('/balance', {params: {userId: userId}})
       .then((response) => {
-        this.setState({
-          balance: response.data.amount
-        });
+        this.props.dispatch(balance(response.data.amount))
       })
       .catch((err) =>{
         console.error(err);
@@ -156,9 +159,7 @@ class App extends React.Component {
   getUserInfo(userId) {
     axios('/profile', {params: {userId: userId}})
       .then((response) => {
-        this.setState({
-          userInfo: response.data
-        });
+          this.props.dispatch(userInfo(response.data))
       })
       .catch((err) =>{
         console.error(err);
@@ -178,28 +179,21 @@ class App extends React.Component {
   }
 
   logUserIn(userId) {
-    // set the userId in the userInfo object as soon as the user logs in
-    var obj = this.state.userInfo;
-    obj.userId = userId;
-    this.setState({
-      isLoggedIn: true,
-      userInfo: obj
-    })
-    this.loadUserData(userId);
-  }
+     // set the userId in the userInfo object as soon as the user logs in
+     console.log('loguser', this.props);
+     var obj = this.props.user;
+     console.log('obj', obj);
+     obj.userId = userId;
+     this.props.dispatch(logIn(obj));
+     this.loadUserData(userId);
+   }
 
   logUserOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(() => {
       console.log('User signed out.');
-      this.setState({
-        isLoggedIn: false,
-        globalFeed: {},
-        userFeed: {},
-        balance: null,
-        userInfo: {}
-      })
-    });
+      this.props.dispatch(logOut())
+    })
   }
 
   render () {
@@ -220,7 +214,6 @@ class App extends React.Component {
                 loadMoreFeed={this.loadMoreFeed.bind(this)}
                 globalFeed={this.state.globalFeed}
                 userInfo={this.state.userInfo}
-                balance={this.state.balance}
                 friends={this.state.friends}
                 {...props}
               />
@@ -275,10 +268,22 @@ class App extends React.Component {
 // ReactDOM.render(<App />, document.getElementById('app'));
 
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
+  console.log('app', state);
   return {
-
+    user: state.user,
+    logOut,
+    logIn,
+    balance: state.balance,
+    userInfo,
   };
 }
+
+// const mapDistpatchToProps = dispatch => {
+//   return {
+
+//   };
+// }
+
 
 export default connect(mapStateToProps)(App);
