@@ -8,6 +8,7 @@ import axios from 'axios';
 // ---------- React-Redux ---------- //
 import { connect } from 'react-redux';
 import { logOut,
+         logIn,
          balance,
          userInfo } from './components/Reducers/Actions.js'
 
@@ -37,12 +38,13 @@ class App extends React.Component {
       globalFeed: {},
       userFeed: {},
       // balance: null,
-      userInfo: {},
+      // userInfo: {},
       friends: []
     }
   }
 
   componentWillMount() {
+    console.log('this', this.props)
     this.client_id = '636654108787-tpfoiuolsol40okb92hejj1f3912dc7l.apps.googleusercontent.com';
     gapi.load('auth2', () => {
       // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -53,7 +55,7 @@ class App extends React.Component {
             let idToken = googleAuth.currentUser.get().getAuthResponse().id_token;
               axios.post('/login', {idToken})
                 .then((userId) => {
-                  console.log('userid', userId)
+                  console.log('userid', userId);
                   this.logUserIn(userId.data);
                 })
                 .catch((err) => {
@@ -177,32 +179,21 @@ class App extends React.Component {
   }
 
   logUserIn(userId) {
-    // set the userId in the userInfo object as soon as the user logs in
-    var obj = this.state.userInfo;
-    obj.userId = userId;
-    this.setState({
-      isLoggedIn: true,
-      userInfo: obj
-    })
-    this.loadUserData(userId);
-  }
+     // set the userId in the userInfo object as soon as the user logs in
+     console.log('loguser', this.props);
+     var obj = this.props.user;
+     console.log('obj', obj);
+     obj.userId = userId;
+     this.props.dispatch(logIn(obj));
+     this.loadUserData(userId);
+   }
 
   logUserOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(() => {
       console.log('User signed out.');
-      this.setState({
-        isLoggedIn: false,
-        globalFeed: {},
-        userFeed: {},
-        balance: null,
-        userInfo: {}
-      })
-    });
-
-    // console.log('before dispatch');
-    // this.props.dispatch(logOut())
-    // console.log('after dispatch');
+      this.props.dispatch(logOut())
+    })
   }
 
   render () {
@@ -280,9 +271,11 @@ class App extends React.Component {
 const mapStateToProps = state => {
   console.log('app', state);
   return {
+    user: state.user,
     logOut,
-    balance,
-    userInfo
+    logIn,
+    balance: state.balance,
+    userInfo,
   };
 }
 

@@ -1,6 +1,7 @@
 export const LOG_USER_OUT = 'LOG_USER_OUT';
 export const GET_BALANCE = 'GET_BALANCE';
 export const GET_USER_INFO = 'GET_USER_INFO';
+export const LOG_IN = 'LOG_IN';
 
 
 // /*
@@ -30,6 +31,12 @@ export function userInfo(request) {
 		return {	type: GET_USER_INFO,
 							payload: request
 						}
+}
+export function logIn(request) {
+  console.log('logging in', request);
+   return {	type: LOG_IN,
+       			payload: request
+     			}
 }
 
 // export function logIn() {

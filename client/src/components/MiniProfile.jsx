@@ -66,7 +66,7 @@ class MiniProfile extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state.userInfo.displayName);
+  // console.log(state.userInfo.displayName);
   return {
     balance: state.balance,
     userInfo: state.userInfo
