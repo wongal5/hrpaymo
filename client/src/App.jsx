@@ -19,11 +19,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 // ---------- Componenents ---------- //
 import LoggedOutHome from './components/LoggedOutHome.jsx';
 import Home from './components/Home.jsx';
-<<<<<<< HEAD:client/src/App.jsx
-=======
-// import Login from './components/Login.jsx';
-// import SignUp from './components/SignUp.jsx';
->>>>>>> functioning google login calls:client/src/index.jsx
 import Profile from './components/Profile.jsx';
 import Navbar from './components/Navbar.jsx';
 // ---------- Helper ---------- //
@@ -253,17 +248,6 @@ class App extends React.Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <BrowserRouter>
           <Switch>
-<<<<<<< HEAD:client/src/App.jsx
-=======
-            {/* <Route 
-              exact path="/signup" 
-              render={routeProps => <SignUp {...routeProps} logUserIn={this.logUserIn.bind(this)} />} 
-            /> */}
-            <Route 
-              exact path="/login" 
-              render={routeProps => <Login {...routeProps} logUserIn={this.logUserIn.bind(this)} />} 
-            />
->>>>>>> functioning google login calls:client/src/index.jsx
             <Route 
               path="/:username"
               onEnter={ this.requireAuth }
