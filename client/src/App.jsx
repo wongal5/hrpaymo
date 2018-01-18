@@ -7,6 +7,9 @@ import axios from 'axios';
 
 // ---------- React-Redux ---------- //
 import { connect } from 'react-redux';
+import { logOut,
+         balance,
+         userInfo } from './components/Reducers/Actions.js'
 
 // ---------- Material UI ---------- //
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -24,7 +27,7 @@ const muiTheme = getMuiTheme({
   palette: {
     primary1Color: '#3D95CE',
   },
-});
+})
 
 class App extends React.Component {
   constructor(props) {
@@ -33,7 +36,7 @@ class App extends React.Component {
       isLoggedIn: false,
       globalFeed: {},
       userFeed: {},
-      balance: null,
+      // balance: null,
       userInfo: {},
       friends: []
     }
@@ -144,9 +147,7 @@ class App extends React.Component {
   getBalance(userId) {
     axios('/balance', {params: {userId: userId}})
       .then((response) => {
-        this.setState({
-          balance: response.data.amount
-        });
+        this.props.dispatch(balance(response.data.amount))
       })
       .catch((err) =>{
         console.error(err);
@@ -156,9 +157,7 @@ class App extends React.Component {
   getUserInfo(userId) {
     axios('/profile', {params: {userId: userId}})
       .then((response) => {
-        this.setState({
-          userInfo: response.data
-        });
+          this.props.dispatch(userInfo(response.data))
       })
       .catch((err) =>{
         console.error(err);
@@ -200,6 +199,10 @@ class App extends React.Component {
         userInfo: {}
       })
     });
+
+    // console.log('before dispatch');
+    // this.props.dispatch(logOut())
+    // console.log('after dispatch');
   }
 
   render () {
@@ -220,7 +223,6 @@ class App extends React.Component {
                 loadMoreFeed={this.loadMoreFeed.bind(this)}
                 globalFeed={this.state.globalFeed}
                 userInfo={this.state.userInfo}
-                balance={this.state.balance}
                 friends={this.state.friends}
                 {...props}
               />
@@ -275,10 +277,20 @@ class App extends React.Component {
 // ReactDOM.render(<App />, document.getElementById('app'));
 
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
+  console.log('app', state);
   return {
-
+    logOut,
+    balance,
+    userInfo
   };
 }
+
+// const mapDistpatchToProps = dispatch => {
+//   return {
+
+//   };
+// }
+
 
 export default connect(mapStateToProps)(App);
