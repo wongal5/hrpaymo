@@ -15,9 +15,8 @@ import { LOG_USER_OUT,
          UNKNOWN_USER,
          PROFILE_LOAD_MORE_FEED
                 } from './actions';
-import axios from 'axios';
 
-function paymo(state = {
+const initialState = {
     isLoggedIn: false,
     globalFeed: {},
     userFeed: {},
@@ -32,7 +31,10 @@ function paymo(state = {
     profileInfo: {},
     unknownUser: false,
     profileFeed: {},
-    relationalFeed: {}}, action) {
+    relationalFeed: {}
+}
+
+function paymo(state = initialState, action) {
     // console.log('paymo reducer was called with state', state, 'and action', action)
     switch (action.type) {
         case LOG_USER_OUT:
@@ -94,7 +96,7 @@ function paymo(state = {
               [action.payload.name]: action.payload.value
           })
         case PROFILE_LOAD_MORE_FEED:
-            console.log('reducer load more feed profile', action.payload)
+            // console.log('reducer load more feed profile', action.payload)
             return Object.assign({}, state, {
                 [action.payload.feedType]: action.payload.obj
             })

@@ -57,11 +57,8 @@ class App extends React.Component {
                   console.log('login error', err);
                 })
             }
-
-
-          })
+           })
         });
-      // if user is not logged in
   }
 
   loadUserData(userId) {
@@ -158,7 +155,6 @@ class App extends React.Component {
   getFriendsList(userId) {
     axios('/friends', { params: { userId: userId } })
       .then((response) => {
-        console.log('response', response.data)
         this.props.dispatch(getFriends(response.data));
       })
       .catch((err) => {
@@ -187,7 +183,6 @@ class App extends React.Component {
             : 
             <Home
               refreshUserData={this.refreshUserData.bind(this)}
-              // logUserOut={this.logUserOut.bind(this)}
               loadMoreFeed={this.loadMoreFeed.bind(this)}
               {...props}
               />
@@ -201,7 +196,6 @@ class App extends React.Component {
         <div>
           {!this.props.isLoggedIn 
             ? <LoggedOutHome 
-                isLoggedIn={this.props.isLoggedIn} 
                 logUserIn={this.logUserIn.bind(this)}
                 {...routeProps}
               />
@@ -209,11 +203,6 @@ class App extends React.Component {
             <Profile 
                 key={routeProps.location.pathname}
                 refreshUserData={this.refreshUserData.bind(this)}
-                isLoggedIn={this.props.isLoggedIn} 
-                // logUserOut={this.logUserOut.bind(this)}
-                // isLoggedIn={this.props.isLoggedIn} 
-                // logUserOut={this.logUserOut.bind(this)}
-                userInfo={this.props.userInfo}
                 {...routeProps}
               />
           }
@@ -240,9 +229,6 @@ class App extends React.Component {
     )
   }
 }
-
-
-
 
 const mapStateToProps = state => {
   return {
