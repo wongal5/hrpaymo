@@ -174,13 +174,6 @@ class App extends React.Component {
      this.loadUserData(userId);
    }
 
-  // logUserOut() {
-  //   var auth2 = gapi.auth2.getAuthInstance();
-  //   auth2.signOut().then(() => {
-  //     console.log('User signed out.');
-  //     this.props.dispatch(actionLogOut())
-  //   })
-  // }
 
   render () {
     const HomeWithProps = (props) => {
