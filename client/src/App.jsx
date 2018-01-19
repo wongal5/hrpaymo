@@ -12,7 +12,8 @@ import { actionLogOut,
          actionBalance,
          actionUserInfo,
          actionPrependFeed,
-         actionLoadMoreFeed
+         actionLoadMoreFeed,
+         getFriends
           } from './components/Reducers/Actions.js'
 
 // ---------- Material UI ---------- //
@@ -259,6 +260,7 @@ const mapStateToProps = state => {
     userFeed: state.userFeed,
     actionLogOut,
     actionLogIn,
+    getFriends,
     actionBalance,
     actionUserInfo,
     actionPrependFeed,

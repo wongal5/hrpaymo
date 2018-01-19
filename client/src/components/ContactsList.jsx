@@ -6,11 +6,10 @@ import Divider from 'material-ui/Divider';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import ChatWindow from './ChatWindow.jsx';
 
+import { connect } from 'redux';
+
 class ContactsList extends React.Component {
-    constructor(props){
-        super(props);
-    }
-    
+
     render() {
         return (
             <div>
@@ -28,4 +27,9 @@ class ContactsList extends React.Component {
     }
 };
 
-export default ContactsList;
+
+const mapStateToProps = state => {
+    friends: state.friends
+}
+
+export default connect(mapStateToProps)(ContactsList);
