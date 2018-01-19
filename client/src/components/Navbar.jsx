@@ -44,7 +44,7 @@ class Navbar extends React.Component {
         iconStyleLeft={style.left}
         iconElementRight={
           <div>
-            {this.props.isLoggedIn && 
+            {this.props.isLoggedIn &&
               <FlatButton 
                 style={style.log_out}
                 hoverColor='#03A9F4'

@@ -33,14 +33,14 @@ class MiniProfile extends React.Component {
   // }
 
   render() {
-    console.log('render', this.props)
+    console.log('Mini Profile is rendering', this.props)
     return (
       <Paper className='feed-container'>
         <Card>
           <CardHeader
             title={
               <div>
-                <span style={style.title}>{this.props.userInfo}</span>
+                <span style={style.title}>{this.props.userInfo.displayName}</span>
               </div>
             }
             subtitle={
