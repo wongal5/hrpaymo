@@ -65,7 +65,6 @@ class Payment extends React.Component {
       amount: this.props.amount,
       note: this.props.note
     };
-    console.log('payment', payment);
     axios.post('/pay', payment)
       .then((response) => {
       this.props.dispatch(payUser());    
