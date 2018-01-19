@@ -33,7 +33,6 @@ export function actionUserInfo(request) {
 						}
 }
 export function actionLogIn(request) {
-	// const result = await request;
 	return {
 		type: LOG_IN,
 		payload: request
@@ -48,7 +47,6 @@ export function getFriends(request) {
 }
 
 export function actionPrependFeed(request) {
-	// console.log('action creator feed', request);
 	return {
 		type: PREPEND_FEED,
 		payload: request
@@ -56,7 +54,6 @@ export function actionPrependFeed(request) {
 }
 
 export function actionLoadMoreFeed(request) {
-	// console.log('action load feed creator', request);
 	return {
 		type: LOAD_MORE_FEED,
 		payload: request
@@ -71,7 +68,6 @@ export function changeUsernames(request) {
 }
 
 export function changePayeeUsername(request) {
-	console.log('here is the request', request);
 	return {
 		type: CHANGE_PAYEE_USERNAME,
 		payload: request

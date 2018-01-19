@@ -70,7 +70,6 @@ function paymo(state = {
               usernames: action.payload
           })
         case CHANGE_PAYEE_USERNAME: 
-          console.log('payload', action.payload)
           return Object.assign({}, state, {
               payeeUsername: action.payload
           })
