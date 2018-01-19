@@ -119,22 +119,21 @@ class Profile extends React.Component {
     
     return (
       <div>
-        <Navbar 
-          logUserOut={this.props.logUserOut} />
+        <Navbar />
         <div className='body-container'>
           {this.props.unknownUser 
             ? <div>User does not exist</div>
             : <div className='pay-feed-container'>
-              <ProfileHeader />
-              {this.props.userInfo.username !== this.props.match.params.username
-                ? <Payment />
-                : null
-              }
-              <FeedContainer       
-                loadMoreFeed={this.loadMoreFeed.bind(this)}
-                base={this.props.match.params.username}
-                view={this.extractView()}
-              />
+                <ProfileHeader />
+                {this.props.userInfo.username !== this.props.match.params.username
+                  ? <Payment />
+                  : null
+                }
+                <FeedContainer       
+                  loadMoreFeed={this.loadMoreFeed.bind(this)}
+                  base={this.props.match.params.username}
+                  view={this.extractView()}
+                />
               </div>
           }
         </div>
@@ -143,7 +142,7 @@ class Profile extends React.Component {
   }
 }
 const mapStateToProps = state => {
-  console.log('state', state)
+  // console.log('state', state)
   return {
     profileInfo: state.profileInfo,
     unknownUser: state.unknownUser,

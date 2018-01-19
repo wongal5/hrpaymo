@@ -15,7 +15,6 @@ import { LOG_USER_OUT,
          UNKNOWN_USER,
          PROFILE_LOAD_MORE_FEED
                 } from './actions';
-import axios from 'axios';
 
 const initialState = {
     isLoggedIn: false,

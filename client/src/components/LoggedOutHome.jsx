@@ -37,8 +37,7 @@ class LoggedOutHome extends React.Component {
   render() {
     return (
       <div>
-        <Navbar 
-          logUserOut={this.props.logUserOut} />
+        <Navbar />
         <div className='body-container'>
           <div className='splash' >
             <div className='splash-images'>
@@ -47,9 +46,7 @@ class LoggedOutHome extends React.Component {
             <div className='splash-textColumn'>
               <h1>Send money and make purchases with Paywaal.</h1>
               <p>Ready to get started?</p>
-
               <div ref="googleButton" className="g-signin2" data-width="350em" data-height="50em" data-longtitle="true"></div>
-
             </div>
           </div>
         </div>

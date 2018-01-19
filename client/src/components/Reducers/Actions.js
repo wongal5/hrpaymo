@@ -72,7 +72,7 @@ export function changeUsernames(request) {
 }
 
 export function actionProfileLoadMoreFeed(request) {
-	console.log('action profile load feed', request);
+	// console.log('action profile load feed', request);
 	return {
 		type: PROFILE_LOAD_MORE_FEED,
 		payload: request
