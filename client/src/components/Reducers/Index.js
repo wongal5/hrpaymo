@@ -9,6 +9,7 @@ import { LOG_USER_OUT,
          CHANGE_PAYEE_USERNAME,
          PAY_USER,
          NO_PAY_USER,
+         HANDLE_PAYMENT_INPUTS,
          LOAD_MORE_FEED} from './actions';
 import axios from 'axios';
 
@@ -69,6 +70,7 @@ function paymo(state = {
               usernames: action.payload
           })
         case CHANGE_PAYEE_USERNAME: 
+          console.log('payload', action.payload)
           return Object.assign({}, state, {
               payeeUsername: action.payload
           })
@@ -82,6 +84,10 @@ function paymo(state = {
         case NO_PAY_USER: 
           return Object.assign({}, state, {
               paymentFail: true
+          })
+        case HANDLE_PAYMENT_INPUTS: 
+          return Object.assign({}, state, {
+              [action.payload.name]: action.payload.value
           })
         default:
             return state

@@ -28,6 +28,10 @@ class ProfileHeader extends React.Component {
     return (
       <Paper className='feed-container'>
         <Card>
+<<<<<<< HEAD
+=======
+          {/* <ChatWindow /> */}
+>>>>>>> have payment functions finished in redux but am getting 400 errors
           <CardHeader
             title={
               <div>

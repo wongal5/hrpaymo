@@ -10,6 +10,7 @@ export const CHANGE_USERNAMES = 'CHANGE_USERNAMES';
 export const CHANGE_PAYEE_USERNAME = 'CHANGE_PAYEE_USERNAME';
 export const PAY_USER = 'PAY_USER';
 export const NO_PAY_USER = 'NO_PAY_USER';
+export const HANDLE_PAYMENT_INPUTS = 'HANDLE_PAYMENT_INPUTS';
 
 // /*
 //  * action creators
@@ -62,14 +63,15 @@ export function actionLoadMoreFeed(request) {
 	}
 }
 
-export function changeUsername(request) {
+export function changeUsernames(request) {
 	return {
-		type: CHANGE_USERNAME,
+		type: CHANGE_USERNAMES,
 		payload: request
 	}
 }
 
 export function changePayeeUsername(request) {
+	console.log('here is the request', request);
 	return {
 		type: CHANGE_PAYEE_USERNAME,
 		payload: request
@@ -85,5 +87,12 @@ export function payUser() {
 export function noPayUser() {
 	return {
 		type: NO_PAY_USER
+	}
+}
+
+export function handlePaymentInputs(obj) {
+	return {
+		type: HANDLE_PAYMENT_INPUTS,
+		payload: obj
 	}
 }

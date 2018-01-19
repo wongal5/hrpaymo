@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { connect } from 'react-redux';
-import { changeUsername, changePayeeUsername, payUser, noPayUser, handlePaymentInputs } from './Reducers/Actions.js';
+import { changeUsernames, changePayeeUsername, payUser, noPayUser, handlePaymentInputs } from './Reducers/Actions.js';
 
 const style = {
   form: {
@@ -32,18 +32,18 @@ class Payment extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      payeeUsername: '',
-      amount: '',
-      note: '',
-      paymentFail: false,
-      usernames: []
+    //   payeeUsername: '',
+    //   amount: '',
+    //   note: '',
+    //   paymentFail: false,
+    //   usernames: []
     }
   }
 
   componentDidMount() {
     axios('/usernames', { params: { userId: this.props.payerId }})
     .then(response => {
-      this.props.dispatch(changeUsername(response.data.usernames));
+      this.props.dispatch(changeUsernames(response.data.usernames));
       // this.setState({
       //   usernames: response.data.usernames
       // });
@@ -66,6 +66,7 @@ class Payment extends React.Component {
   }
 
   onDropdownInput(searchText) {
+    console.log('on dropdown');
     this.props.dispatch(changePayeeUsername(searchText));
     // this.setState({
     //   payeeUsername: searchText
@@ -75,9 +76,10 @@ class Payment extends React.Component {
   payUser() {
     let payment = {
       payerId: this.props.payerId,
-      payeeUsername: !this.state.payeeUsername ? this.props.payeeUsername : this.state.payeeUsername,
-      amount: this.state.amount,
-      note: this.state.note
+      payeeUsername: this.props.payeeUsername,
+      // payeeUsername: !this.state.payeeUsername ? this.props.payeeUsername : this.state.payeeUsername,
+      amount: this.props.amount,
+      note: this.props.note
     };
     axios.post('/pay', payment)
       .then((response) => {
@@ -125,9 +127,9 @@ class Payment extends React.Component {
                   style={style.input}
                   name='payeeUsername'
                   filter={AutoComplete.caseInsensitiveFilter}
-                  dataSource={this.state.usernames ? this.state.usernames : []}
+                  dataSource={this.props.usernames ? this.props.usernames : []}
                   maxSearchResults={7}
-                  searchText={this.state.payeeUsername}
+                  searchText={this.props.payeeUsername}
                   onUpdateInput = {this.onDropdownInput.bind(this)}
                 />
               </div>
@@ -137,7 +139,7 @@ class Payment extends React.Component {
             <TextField
               style={style.input}
               name='amount'
-              value={this.state.amount}
+              value={this.props.amount}
               onChange = {this.handleInputChanges.bind(this)}
               hintText="Enter an amount"
               floatingLabelText="$"
@@ -148,7 +150,7 @@ class Payment extends React.Component {
             <TextField
               style={style.input}
               name='note'
-              value={this.state.note}
+              value={this.props.note}
               onChange = {this.handleInputChanges.bind(this)}
               hintText="for"
               floatingLabelText="Leave a comment"
@@ -173,8 +175,9 @@ class Payment extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    paymentFail: state.paymentFail,
     changePayeeUsername,
-    changeUsername,
+    changeUsernames,
     payUser,
     noPayUser,
     handlePaymentInputs
