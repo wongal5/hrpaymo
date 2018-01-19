@@ -11,6 +11,10 @@ export const CHANGE_PAYEE_USERNAME = 'CHANGE_PAYEE_USERNAME';
 export const PAY_USER = 'PAY_USER';
 export const NO_PAY_USER = 'NO_PAY_USER';
 export const HANDLE_PAYMENT_INPUTS = 'HANDLE_PAYMENT_INPUTS';
+export const LOAD_PROFILE_DATA = 'LOAD_PROFILE_DATA';
+export const UNKNOWN_USER = 'UNKNOWN_USER';
+export const PROFILE_LOAD_MORE_FEED = 'PROFILE_LOAD_MORE_FEED'
+
 
 // /*
 //  * action creators
@@ -67,6 +71,24 @@ export function changeUsernames(request) {
 	}
 }
 
+export function actionProfileLoadMoreFeed(request) {
+	console.log('action profile load feed', request);
+	return {
+		type: PROFILE_LOAD_MORE_FEED,
+		payload: request
+	}
+}
+
+
+export function actionLoadProfileData(request) {
+	// console.log('action load profile', request);
+	return {
+		type: LOAD_PROFILE_DATA,
+		payload: request
+	}
+}
+
+
 export function changePayeeUsername(request) {
 	return {
 		type: CHANGE_PAYEE_USERNAME,
@@ -92,3 +114,11 @@ export function handlePaymentInputs(obj) {
 		payload: obj
 	}
 }
+
+export function actionUnknownUser() {
+	// console.log('action load unknown user', request);
+		return {
+			type: UNKNOWN_USER,
+		}
+}
+

@@ -211,6 +211,8 @@ class App extends React.Component {
                 refreshUserData={this.refreshUserData.bind(this)}
                 isLoggedIn={this.props.isLoggedIn} 
                 // logUserOut={this.logUserOut.bind(this)}
+                // isLoggedIn={this.props.isLoggedIn} 
+                // logUserOut={this.logUserOut.bind(this)}
                 userInfo={this.props.userInfo}
                 {...routeProps}
               />

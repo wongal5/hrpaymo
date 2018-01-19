@@ -3,19 +3,15 @@ import Navbar from './Navbar.jsx';
 import Payment from './Payment.jsx';
 import FeedContainer from './FeedContainer.jsx';
 import ProfileHeader from './ProfileHeader.jsx';
+import { connect } from 'react-redux';
+import { actionLoadProfileData,
+         actionUnknownUser,
+         actionProfileLoadMoreFeed,
+         actionPrependFeed } from './Reducers/Actions.js'
 import axios from 'axios';
 import feedManipulation from '../feedManipulation.js'
 
 class Profile extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      profileInfo: {},
-      unknownUser: false,
-      profileFeed: {},
-      relationalFeed: {}
-    }
-  }
 
   componentDidMount() {
     let profileUsername = this.props.match.params.username;
@@ -50,15 +46,12 @@ class Profile extends React.Component {
     }
 
     // If feed was empty, set the returned transactions as the feed
-    let isFeedEmpty = !this.state[feedType].count || this.state[feedType].count === 0;
+    let isFeedEmpty = !this.props[feedType].count || this.props[feedType].count === 0;
 
     let newFeedObject = isFeedEmpty
       ? transactionSummary
-      : feedManipulation.mergeFeeds(transactionSummary, this.state[feedType]);
-
-    this.setState({
-      [feedType]: newFeedObject
-    })
+      : feedManipulation.mergeFeeds(transactionSummary, this.props[feedType]);
+    this.props.dispatch(actionPrependFeed({ feedType: feedType, obj: newFeedObject}))
   }
 
   loadMoreFeed(feedType, userId) {
@@ -67,7 +60,7 @@ class Profile extends React.Component {
     // Send along the next valid ID you'd like returned back
     // from the database
     let params = {
-      beforeId: this.state[feedType].nextPageTransactionId,
+      beforeId: this.props[feedType].nextPageTransactionId,
       userId: userId,
       profileUsername: this.props.match.params.username
     }
@@ -77,11 +70,8 @@ class Profile extends React.Component {
 
         // Confirm there additional items to load
         if (response.data && response.data.count > 0) {
-          let combinedItems = feedManipulation.mergeFeeds(this.state[feedType], response.data);
-
-          this.setState({
-            [feedType]: combinedItems
-          })
+          let combinedItems = feedManipulation.mergeFeeds(this.props[feedType], response.data);
+          this.props.dispatch(actionProfileLoadMoreFeed({ feedType: feedType, obj: combinedItems }))
         }
       })
       .catch((err) => {
@@ -92,14 +82,10 @@ class Profile extends React.Component {
   loadProfileData(username) {
     axios('/publicprofile', {params: {username: username}})
       .then((response) => {
-        this.setState({
-          profileInfo: response.data
-        });
+        this.props.dispatch(actionLoadProfileData(response.data));
       })
       .catch((err) =>{
-        this.setState({
-          unknownUser: true
-        })
+        this.props.dispatch(actionUnknownUser())
         console.error(err);
       });
   }
@@ -112,16 +98,16 @@ class Profile extends React.Component {
   render() {
     let orderedFeeds = [
       {
-        displayLabel: `${this.state.profileInfo.firstName}'s Feed`,
+        displayLabel: `${this.props.profileInfo.firstName}'s Feed`,
         urlParam: 'all',
         feedType: 'profileFeed',
-        data: this.state.profileFeed
+        data: this.props.profileFeed
       },
       {
-        displayLabel: `Between You & ${this.state.profileInfo.firstName}`,
+        displayLabel: `Between You & ${this.props.profileInfo.firstName}`,
         urlParam: 'mutual',
         feedType: 'relationalFeed',
-        data: this.state.relationalFeed
+        data: this.props.relationalFeed
       }
     ];
     
@@ -134,28 +120,18 @@ class Profile extends React.Component {
     return (
       <div>
         <Navbar 
-          isLoggedIn={this.props.isLoggedIn} 
           logUserOut={this.props.logUserOut} />
         <div className='body-container'>
-          {this.state.unknownUser 
+          {this.props.unknownUser 
             ? <div>User does not exist</div>
             : <div className='pay-feed-container'>
-              <ProfileHeader 
-                profileInfo={this.state.profileInfo}
-              />
+              <ProfileHeader />
               {this.props.userInfo.username !== this.props.match.params.username
-                ? <Payment
-                    refreshUserData={this.props.refreshUserData}
-                    payeeUsername={this.state.profileInfo.username}
-                    payerId={this.props.userInfo.userId}
-                  />
-                :
-                  null
+                ? <Payment />
+                : null
               }
               <FeedContainer       
-                userId={this.props.userInfo.userId}
                 loadMoreFeed={this.loadMoreFeed.bind(this)}
-                feeds={orderedFeeds}
                 base={this.props.match.params.username}
                 view={this.extractView()}
               />
@@ -166,5 +142,22 @@ class Profile extends React.Component {
     );
   }
 }
-
-export default Profile;
+const mapStateToProps = state => {
+  console.log('state', state)
+  return {
+    profileInfo: state.profileInfo,
+    unknownUser: state.unknownUser,
+    profileFeed: state.profileFeed,
+    relationalFeed: state.relationalFeed,
+    isLoggedIn: state.isLoggedIn,
+    userInfo: state.userInfo,
+    globalFeed: state.globalFeed,
+    userFeed: state.userFeed,
+    actionLoadProfileData,
+    actionUnknownUser,
+    actionProfileLoadMoreFeed,
+    actionPrependFeed
+    
+  };
+}
+export default connect(mapStateToProps)(Profile);
