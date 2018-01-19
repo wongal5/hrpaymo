@@ -12,11 +12,6 @@ export const LOAD_MORE_FEED = 'LOAD_MORE_FEED';
 //  * action creators
 //  */
 
-// export function addTodo(text) {
-//   return { type: ADD_TODO,
-// text: text    
-// }
-// }
 
 export function actionLogOut() {
     return { type: LOG_USER_OUT }

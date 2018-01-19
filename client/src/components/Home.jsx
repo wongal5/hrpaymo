@@ -3,66 +3,47 @@ import Navbar from './Navbar.jsx';
 import Payment from './Payment.jsx';
 import FeedContainer from './FeedContainer.jsx';
 import MiniProfile from './MiniProfile.jsx';
-import ContactsList from './ContactsList.jsx';
+import { connect } from 'react-redux';
+// import ContactsList from './ContactsList.jsx';
 
-class Home extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+const Home = (props) => {
 
-  extractView() {
-    let search = this.props.location && this.props.location.search;
+  let extractView = () => {
+    let search = props.location && props.location.search;
     return search && search.slice(search.indexOf('=') + 1);
   }
 
-  render() {
-    let orderedFeeds = [
-      {
-        displayLabel: 'mine',
-        urlParam: 'mine',
-        feedType: 'userFeed',
-        data: this.props.userFeed
-      },
-      {
-        displayLabel: 'public',
-        urlParam: 'public',
-        feedType: 'globalFeed',
-        data: this.props.globalFeed
-      }
-    ];
-
-    return (
-      <div>
-        <Navbar 
-          isLoggedIn={this.props.isLoggedIn} 
-          logUserOut={this.props.logUserOut}
-        />
-        <div className="home">
-          <div className="home-leftColumn pay-feed-container">
-            <Payment 
-              payerId={this.props.userInfo.userId}
-              refreshUserData={this.props.refreshUserData} />
-            <FeedContainer 
-              userId={this.props.userInfo.userId}
-              base='/'
-              feeds={orderedFeeds}
-              loadMoreFeed={this.props.loadMoreFeed}
-              view={this.extractView()}
-            />
-          </div>
-          <div className="home-rightColumn">
-            <MiniProfile 
-              // userInfo={this.props.userInfo}
-            />
-            <ContactsList 
-              friends={this.props.friends}
-              uiAvatar={this.props.userInfo.avatarUrl || '/images/no-image.gif'}
-            />
-          </div>
+  return (
+    <div>
+      <Navbar logUserOut={props.logUserOut} />
+      <div className="home">
+        <div className="home-leftColumn pay-feed-container">
+          <Payment 
+            refreshUserData={props.refreshUserData} />
+          <FeedContainer
+            loadMoreFeed={props.loadMoreFeed}
+            view={extractView()}
+          />
+        </div>
+        <div className="home-rightColumn">
+          <MiniProfile />
+          {/* <ContactsList 
+            friends={props.friends}
+            uiAvatar={props.userInfo.avatarUrl || '/images/no-image.gif'}
+          /> */}
         </div>
       </div>
-    );
+    </div>
+  );
+}
+
+const mapStateToProps = state => {
+  return {
+    globalFeed: state.globalFeed,
+    userFeed: state.userFeed
   }
 }
 
-export default Home;
+export default connect(mapStateToProps)(Home);
+
+// export default Home;

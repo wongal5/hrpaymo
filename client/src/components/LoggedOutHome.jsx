@@ -38,7 +38,6 @@ class LoggedOutHome extends React.Component {
     return (
       <div>
         <Navbar 
-          isLoggedIn={this.props.isLoggedIn} 
           logUserOut={this.props.logUserOut} />
         <div className='body-container'>
           <div className='splash' >

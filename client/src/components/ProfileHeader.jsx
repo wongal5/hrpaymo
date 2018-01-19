@@ -28,7 +28,6 @@ class ProfileHeader extends React.Component {
     return (
       <Paper className='feed-container'>
         <Card>
-          <ChatWindow />
           <CardHeader
             title={
               <div>

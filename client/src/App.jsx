@@ -188,21 +188,14 @@ class App extends React.Component {
         <div>
           {!this.props.isLoggedIn
             ? <LoggedOutHome 
-                isLoggedIn={this.props.isLoggedIn} 
                 logUserIn={this.logUserIn.bind(this)}
                 {...props}
               />
             : 
             <Home
               refreshUserData={this.refreshUserData.bind(this)}
-              isLoggedIn={this.props.isLoggedIn}
               logUserOut={this.logUserOut.bind(this)}
-              userFeed={this.props.userFeed}
               loadMoreFeed={this.loadMoreFeed.bind(this)}
-              globalFeed={this.props.globalFeed}
-              userInfo={this.props.userInfo}
-              balance={this.props.balance}
-              friends={this.props.friends}
               {...props}
               />
           }
