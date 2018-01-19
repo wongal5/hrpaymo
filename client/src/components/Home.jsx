@@ -15,7 +15,7 @@ const Home = (props) => {
 
   return (
     <div>
-      <Navbar logUserOut={props.logUserOut} />
+      <Navbar />
       <div className="home">
         <div className="home-leftColumn pay-feed-container">
           <Payment 

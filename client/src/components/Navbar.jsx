@@ -2,7 +2,10 @@ import React from 'react';
 import { withRouter, Link } from "react-router-dom";
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
+
 import { connect } from 'react-redux';
+import { paymo } from './Reducers';
+import { actionLogOut } from './Reducers/Actions.js';
 
 const style = {
   nav: { background: '#3D95CE', display: 'flex' },
@@ -10,13 +13,21 @@ const style = {
   log_out: { color: '#fff', textDecoration: 'underline' }
 };
 
-const Navbar = (props) => {
-
-  let logOutAndRedirect = () => {
-    props.logUserOut();
-    // props.history.push("/login");
+class Navbar extends React.Component {
+  constructor(props) {
+    super(props);
   }
 
+  logUserOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(() => {
+      console.log('User signed out.');
+      this.props.dispatch(actionLogOut())
+    })
+  }
+
+
+  render() {
   return (
     <AppBar 
       className='navbar'
@@ -29,12 +40,12 @@ const Navbar = (props) => {
       iconStyleLeft={style.left}
       iconElementRight={
         <div>
-          {props.isLoggedIn &&
+          {this.props.isLoggedIn &&
             <FlatButton 
               style={style.log_out}
               hoverColor='#03A9F4'
               className='navbar-logout' 
-              onClick={logOutAndRedirect} 
+              onClick={e => {this.logUserOut()}} 
               label="Log Out" 
             />
           }
@@ -42,11 +53,18 @@ const Navbar = (props) => {
       }
     />
   );
+  }
 }
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
+
   return {
-    isLoggedIn: state.isLoggedIn
+    isLoggedIn: state.isLoggedIn,
+    globalFeed: state.globalFeed,
+    balance: state.balance,
+    userInfo: state.userInfo,
+    userFeed: state.userFeed,
+    actionLogOut
   }
 }
 
