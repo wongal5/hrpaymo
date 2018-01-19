@@ -161,7 +161,7 @@ class App extends React.Component {
         this.props.dispatch(getFriends(response.data));
       })
       .catch((err) => {
-        console.log('why do you error')
+        // console.log('why do you error')
         console.error(err);
       });
   }
