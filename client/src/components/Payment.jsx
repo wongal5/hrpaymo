@@ -6,6 +6,10 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import AutoComplete from 'material-ui/AutoComplete';
 
+import { connect } from 'react-redux';
+import { paymo } from './Reducers';
+import { changeUsernames, changePayeeUsername, payUser, noPayUser, handlePaymentInputs } from './Reducers/Actions.js';
+
 const style = {
   form: {
   },
@@ -26,23 +30,13 @@ const style = {
 }
 
 class Payment extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      payeeUsername: '',
-      amount: '',
-      note: '',
-      paymentFail: false,
-      usernames: []
-    }
-  }
+
 
   componentDidMount() {
-    axios('/usernames', { params: { userId: this.props.payerId }})
+    axios('/usernames', { params: { userId: this.props.userInfo.userId }})
     .then(response => {
-      this.setState({
-        usernames: response.data.usernames
-      });
+      this.props.dispatch(changeUsernames(response.data.usernames));
+   
     })
     .catch(err => {
       console.error(err);
@@ -51,33 +45,30 @@ class Payment extends React.Component {
   
   handleInputChanges (event) {
     let target = event.target;
-    this.setState({
-      [target.name] : target.value
-    })
+    var obj = {
+      name: target.name,
+      value: target.value
+    }
+    this.props.dispatch(handlePaymentInputs(obj));
+  
   }
 
   onDropdownInput(searchText) {
-    this.setState({
-      payeeUsername: searchText
-    })
+    this.props.dispatch(changePayeeUsername(searchText));
+  
   }
 
   payUser() {
     let payment = {
-      payerId: this.props.payerId,
-      payeeUsername: !this.state.payeeUsername ? this.props.payeeUsername : this.state.payeeUsername,
-      amount: this.state.amount,
-      note: this.state.note
+      payerId: this.props.userInfo.userId,
+      payeeUsername: this.props.payeeUsername,
+      amount: this.props.amount,
+      note: this.props.note
     };
     axios.post('/pay', payment)
       .then((response) => {
-        this.setState({
-          payeeUsername: '',
-          amount: '',
-          note: '',
-          paymentFail: false
-        });
-        this.props.refreshUserData(this.props.payerId);
+      this.props.dispatch(payUser());    
+        this.props.refreshUserData(this.props.userInfo.userId);
       })
       .catch(error => {
         if (error.response) {
@@ -95,9 +86,7 @@ class Payment extends React.Component {
         } else {
           console.error('Error in payment component:', error);
         }
-        this.setState({
-          paymentFail: true
-        });
+        this.props.dispatch(noPayUser());
       })
   }
 
@@ -105,7 +94,6 @@ class Payment extends React.Component {
     return (
       <Paper className='payment-container' style={style.form}>
         <div className='payment-item-container'>         
-            {!this.props.payeeUsername && 
               <div className="form-box payment-username">
                 <AutoComplete
                   hintText="Enter a username"
@@ -113,19 +101,18 @@ class Payment extends React.Component {
                   style={style.input}
                   name='payeeUsername'
                   filter={AutoComplete.caseInsensitiveFilter}
-                  dataSource={this.state.usernames ? this.state.usernames : []}
+                  dataSource={this.props.usernames || []}
                   maxSearchResults={7}
-                  searchText={this.state.payeeUsername}
+                  searchText={this.props.payeeUsername}
                   onUpdateInput = {this.onDropdownInput.bind(this)}
                 />
               </div>
-            }
           <br />
           <div className="form-box payment-amount">
             <TextField
               style={style.input}
               name='amount'
-              value={this.state.amount}
+              value={this.props.amount}
               onChange = {this.handleInputChanges.bind(this)}
               hintText="Enter an amount"
               floatingLabelText="$"
@@ -136,7 +123,7 @@ class Payment extends React.Component {
             <TextField
               style={style.input}
               name='note'
-              value={this.state.note}
+              value={this.props.note}
               onChange = {this.handleInputChanges.bind(this)}
               hintText="for"
               floatingLabelText="Leave a comment"
@@ -148,7 +135,7 @@ class Payment extends React.Component {
         </div>
 
         <button className='btn' onClick={this.payUser.bind(this)}>Pay</button>
-        {this.state.paymentFail
+        {this.props.paymentFail
           ? <label className='error-text'>
               Error in payment processing
             </label>
@@ -159,4 +146,20 @@ class Payment extends React.Component {
   }
 }
 
-export default Payment;
+function mapStateToProps(state) {
+  return {
+    paymentFail: state.paymentFail,
+    usernames: state.usernames,
+    note: state.note,
+    amount: state.amount,
+    userInfo: state.userInfo,
+    payeeUsername: state.payeeUsername,
+    changePayeeUsername,
+    changeUsernames,
+    payUser,
+    noPayUser,
+    handlePaymentInputs
+  }
+}
+
+export default connect(mapStateToProps)(Payment);

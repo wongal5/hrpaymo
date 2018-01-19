@@ -20,13 +20,12 @@ const style = {
 };
 
 class ProfileHeader extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+
 
   render() {
     return (
       <Paper className='feed-container'>
+      
         <Card>
           <CardHeader
             title={

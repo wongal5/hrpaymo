@@ -6,7 +6,11 @@ export const GET_USER_INFO = 'GET_USER_INFO';
 export const LOG_IN = 'LOG_IN';
 export const PREPEND_FEED = 'PREPEND_FEED';
 export const LOAD_MORE_FEED = 'LOAD_MORE_FEED';
-
+export const CHANGE_USERNAMES = 'CHANGE_USERNAMES';
+export const CHANGE_PAYEE_USERNAME = 'CHANGE_PAYEE_USERNAME';
+export const PAY_USER = 'PAY_USER';
+export const NO_PAY_USER = 'NO_PAY_USER';
+export const HANDLE_PAYMENT_INPUTS = 'HANDLE_PAYMENT_INPUTS';
 
 // /*
 //  * action creators
@@ -29,7 +33,6 @@ export function actionUserInfo(request) {
 						}
 }
 export function actionLogIn(request) {
-	// const result = await request;
 	return {
 		type: LOG_IN,
 		payload: request
@@ -44,7 +47,6 @@ export function getFriends(request) {
 }
 
 export function actionPrependFeed(request) {
-	// console.log('action creator feed', request);
 	return {
 		type: PREPEND_FEED,
 		payload: request
@@ -52,9 +54,41 @@ export function actionPrependFeed(request) {
 }
 
 export function actionLoadMoreFeed(request) {
-	// console.log('action load feed creator', request);
 	return {
 		type: LOAD_MORE_FEED,
 		payload: request
+	}
+}
+
+export function changeUsernames(request) {
+	return {
+		type: CHANGE_USERNAMES,
+		payload: request
+	}
+}
+
+export function changePayeeUsername(request) {
+	return {
+		type: CHANGE_PAYEE_USERNAME,
+		payload: request
+	}
+}
+
+export function payUser() {
+	return {
+		type: PAY_USER
+	}
+}
+
+export function noPayUser() {
+	return {
+		type: NO_PAY_USER
+	}
+}
+
+export function handlePaymentInputs(obj) {
+	return {
+		type: HANDLE_PAYMENT_INPUTS,
+		payload: obj
 	}
 }
