@@ -212,7 +212,7 @@ class App extends React.Component {
                 isLoggedIn={this.props.isLoggedIn} 
                 // logUserOut={this.logUserOut.bind(this)}
                 // isLoggedIn={this.props.isLoggedIn} 
-                logUserOut={this.logUserOut.bind(this)}
+                // logUserOut={this.logUserOut.bind(this)}
                 userInfo={this.props.userInfo}
                 {...routeProps}
               />
