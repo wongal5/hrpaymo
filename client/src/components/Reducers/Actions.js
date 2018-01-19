@@ -6,7 +6,10 @@ export const GET_USER_INFO = 'GET_USER_INFO';
 export const LOG_IN = 'LOG_IN';
 export const PREPEND_FEED = 'PREPEND_FEED';
 export const LOAD_MORE_FEED = 'LOAD_MORE_FEED';
-
+export const CHANGE_USERNAMES = 'CHANGE_USERNAMES';
+export const CHANGE_PAYEE_USERNAME = 'CHANGE_PAYEE_USERNAME';
+export const PAY_USER = 'PAY_USER';
+export const NO_PAY_USER = 'NO_PAY_USER';
 
 // /*
 //  * action creators
@@ -56,5 +59,31 @@ export function actionLoadMoreFeed(request) {
 	return {
 		type: LOAD_MORE_FEED,
 		payload: request
+	}
+}
+
+export function changeUsername(request) {
+	return {
+		type: CHANGE_USERNAME,
+		payload: request
+	}
+}
+
+export function changePayeeUsername(request) {
+	return {
+		type: CHANGE_PAYEE_USERNAME,
+		payload: request
+	}
+}
+
+export function payUser() {
+	return {
+		type: PAY_USER
+	}
+}
+
+export function noPayUser() {
+	return {
+		type: NO_PAY_USER
 	}
 }

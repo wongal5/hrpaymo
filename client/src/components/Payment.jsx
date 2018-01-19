@@ -6,6 +6,9 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import AutoComplete from 'material-ui/AutoComplete';
 
+import { connect } from 'react-redux';
+import { changeUsername, changePayeeUsername, payUser, noPayUser, handlePaymentInputs } from './Reducers/Actions.js';
+
 const style = {
   form: {
   },
@@ -40,9 +43,10 @@ class Payment extends React.Component {
   componentDidMount() {
     axios('/usernames', { params: { userId: this.props.payerId }})
     .then(response => {
-      this.setState({
-        usernames: response.data.usernames
-      });
+      this.props.dispatch(changeUsername(response.data.usernames));
+      // this.setState({
+      //   usernames: response.data.usernames
+      // });
     })
     .catch(err => {
       console.error(err);
@@ -51,15 +55,21 @@ class Payment extends React.Component {
   
   handleInputChanges (event) {
     let target = event.target;
-    this.setState({
-      [target.name] : target.value
-    })
+    var obj = {
+      name: target.name,
+      value: target.value
+    }
+    this.props.dispatch(handlePaymentInputs(obj));
+    // this.setState({
+    //   [target.name] : target.value
+    // })
   }
 
   onDropdownInput(searchText) {
-    this.setState({
-      payeeUsername: searchText
-    })
+    this.props.dispatch(changePayeeUsername(searchText));
+    // this.setState({
+    //   payeeUsername: searchText
+    // })
   }
 
   payUser() {
@@ -71,12 +81,13 @@ class Payment extends React.Component {
     };
     axios.post('/pay', payment)
       .then((response) => {
-        this.setState({
-          payeeUsername: '',
-          amount: '',
-          note: '',
-          paymentFail: false
-        });
+      this.props.dispatch(payUser());
+      // { this.setState({
+      //     payeeUsername: '',
+      //     amount: '',
+      //     note: '',
+      //     paymentFail: false
+      //   });
         this.props.refreshUserData(this.props.payerId);
       })
       .catch(error => {
@@ -95,9 +106,10 @@ class Payment extends React.Component {
         } else {
           console.error('Error in payment component:', error);
         }
-        this.setState({
-          paymentFail: true
-        });
+        this.props.dispatch(noPayUser());
+        // this.setState({
+        //   paymentFail: true
+        // });
       })
   }
 
@@ -159,4 +171,14 @@ class Payment extends React.Component {
   }
 }
 
-export default Payment;
+function mapStateToProps(state) {
+  return {
+    changePayeeUsername,
+    changeUsername,
+    payUser,
+    noPayUser,
+    handlePaymentInputs
+  }
+}
+
+export default connect(mapStateToProps)(Payment);

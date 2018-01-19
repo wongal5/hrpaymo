@@ -4,7 +4,11 @@ import { LOG_USER_OUT,
          GET_USER_INFO,
          LOG_IN,
          GET_FRIENDS_LIST,
+         CHANGE_USERNAMES,
          PREPEND_FEED,
+         CHANGE_PAYEE_USERNAME,
+         PAY_USER,
+         NO_PAY_USER,
          LOAD_MORE_FEED} from './actions';
 import axios from 'axios';
 
@@ -14,7 +18,12 @@ function paymo(state = {
     userFeed: {},
     balance: null,
     userInfo: {},
-    friends: []}
+    friends: [],
+    payeeUsername: '',
+    amount: '',
+    note: '',
+    paymentFail: false,
+    usernames: []}
     , action) {
     
     console.log('paymo reducer was called with state', state, 'and action', action)
@@ -55,6 +64,25 @@ function paymo(state = {
             return Object.assign({}, state, {
                 [action.payload.feedType]: action.payload.obj
             })
+        case CHANGE_USERNAMES: 
+          return Object.assign({}, state, {
+              usernames: action.payload
+          })
+        case CHANGE_PAYEE_USERNAME: 
+          return Object.assign({}, state, {
+              payeeUsername: action.payload
+          })
+        case PAY_USER: 
+          return Object.assign({}, state, {
+              payeeUsername: '',
+              amount: '',
+              note: '',
+              paymentFail: false
+          })
+        case NO_PAY_USER: 
+          return Object.assign({}, state, {
+              paymentFail: true
+          })
         default:
             return state
     }
