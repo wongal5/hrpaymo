@@ -7,10 +7,13 @@ import axios from 'axios';
 
 // ---------- React-Redux ---------- //
 import { connect } from 'react-redux';
-import { logOut,
-         logIn,
-         balance,
-         userInfo } from './components/Reducers/Actions.js'
+import { actionLogOut,
+         actionLogIn,
+         actionBalance,
+         actionUserInfo,
+         actionPrependFeed,
+         actionLoadMoreFeed
+          } from './components/Reducers/Actions.js'
 
 // ---------- Material UI ---------- //
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -33,18 +36,9 @@ const muiTheme = getMuiTheme({
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      isLoggedIn: false,
-      globalFeed: {},
-      userFeed: {},
-      // balance: null,
-      // userInfo: {},
-      friends: []
-    }
   }
 
   componentWillMount() {
-    console.log('this', this.props)
     this.client_id = '636654108787-tpfoiuolsol40okb92hejj1f3912dc7l.apps.googleusercontent.com';
     gapi.load('auth2', () => {
       // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -55,7 +49,6 @@ class App extends React.Component {
             let idToken = googleAuth.currentUser.get().getAuthResponse().id_token;
               axios.post('/login', {idToken})
                 .then((userId) => {
-                  console.log('userid', userId);
                   this.logUserIn(userId.data);
                 })
                 .catch((err) => {
@@ -80,8 +73,8 @@ class App extends React.Component {
 
   refreshUserData(userId) {
     this.getBalance(userId);
-    this.getFeed('globalFeed', userId, this.state.globalFeed.newestTransactionId || null);
-    this.getFeed('userFeed', userId, this.state.userFeed.newestTransactionId || null);
+    this.getFeed('globalFeed', userId, this.props.globalFeed.newestTransactionId || null);
+    this.getFeed('userFeed', userId, this.props.userFeed.newestTransactionId || null);
     this.getFriendsList(userId);
   }
 
@@ -109,15 +102,13 @@ class App extends React.Component {
     }
 
     // If feed was empty, set the returned transactions as the feed
-    let isFeedEmpty = !this.state[feedType].count || this.state[feedType].count === 0;
+    let isFeedEmpty = !this.props[feedType].count || this.props[feedType].count === 0;
 
     let newFeedObject = isFeedEmpty
       ? transactionSummary
-      : feedManipulation.mergeFeeds(transactionSummary, this.state[feedType]);
+      : feedManipulation.mergeFeeds(transactionSummary, this.props[feedType]);
+    this.props.dispatch(actionPrependFeed({ feedType: feedType, obj: newFeedObject }))
 
-    this.setState({
-      [feedType]: newFeedObject
-    })
   }
 
   loadMoreFeed(feedType, userId) {
@@ -126,30 +117,27 @@ class App extends React.Component {
     // Send along the next valid ID you'd like returned back
     // from the database
     let params = {
-      beforeId: this.state[feedType].nextPageTransactionId
+      beforeId: this.props[feedType].nextPageTransactionId
     }
 
-    axios(endpoint, {params: params})
+    axios(endpoint, { params: params })
       .then((response) => {
 
         // Confirm there additional items to load
         if (response.data && response.data.count > 0) {
-          let combinedItems = feedManipulation.mergeFeeds(this.state[feedType], response.data);
-
-          this.setState({
-            [feedType]: combinedItems
-          })
+          let combinedItems = feedManipulation.mergeFeeds(this.props[feedType], response.data);
+          this.props.dispatch(actionLoadMoreFeed({ feedType: feedType, obj: combinedItems }))
         }
       })
       .catch((err) => {
         console.error(err);
-      }); 
+      });
   }
 
   getBalance(userId) {
     axios('/balance', {params: {userId: userId}})
       .then((response) => {
-        this.props.dispatch(balance(response.data.amount))
+        this.props.dispatch(actionBalance(response.data.amount))
       })
       .catch((err) =>{
         console.error(err);
@@ -159,7 +147,7 @@ class App extends React.Component {
   getUserInfo(userId) {
     axios('/profile', {params: {userId: userId}})
       .then((response) => {
-          this.props.dispatch(userInfo(response.data))
+          this.props.dispatch(actionUserInfo(response.data))
       })
       .catch((err) =>{
         console.error(err);
@@ -167,24 +155,22 @@ class App extends React.Component {
   }
 
   getFriendsList(userId) {
-    axios('/friends', {params: {userId: userId}})
+    axios('/friends', { params: { userId: userId } })
       .then((response) => {
-        this.setState({
-          friends: response.data.friends
-        });
+        console.log('response', response.data)
+        this.props.dispatch(getFriends(response.data));
       })
       .catch((err) => {
+        console.log('why do you error')
         console.error(err);
       });
   }
 
   logUserIn(userId) {
      // set the userId in the userInfo object as soon as the user logs in
-     console.log('loguser', this.props);
-     var obj = this.props.user;
-     console.log('obj', obj);
+     var obj = this.props.userInfo;
      obj.userId = userId;
-     this.props.dispatch(logIn(obj));
+     this.props.dispatch(actionLogIn(obj));
      this.loadUserData(userId);
    }
 
@@ -192,7 +178,7 @@ class App extends React.Component {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(() => {
       console.log('User signed out.');
-      this.props.dispatch(logOut())
+      this.props.dispatch(actionLogOut())
     })
   }
 
@@ -200,22 +186,24 @@ class App extends React.Component {
     const HomeWithProps = (props) => {
       return (
         <div>
-          {!this.state.isLoggedIn 
+          {!this.props.isLoggedIn
             ? <LoggedOutHome 
-                isLoggedIn={this.state.isLoggedIn} 
+                isLoggedIn={this.props.isLoggedIn} 
                 logUserIn={this.logUserIn.bind(this)}
                 {...props}
               />
-            : <Home
-                refreshUserData={this.refreshUserData.bind(this)}
-                isLoggedIn={this.state.isLoggedIn} 
-                logUserOut={this.logUserOut.bind(this)}
-                userFeed={this.state.userFeed} 
-                loadMoreFeed={this.loadMoreFeed.bind(this)}
-                globalFeed={this.state.globalFeed}
-                userInfo={this.state.userInfo}
-                friends={this.state.friends}
-                {...props}
+            : 
+            <Home
+              refreshUserData={this.refreshUserData.bind(this)}
+              isLoggedIn={this.props.isLoggedIn}
+              logUserOut={this.logUserOut.bind(this)}
+              userFeed={this.props.userFeed}
+              loadMoreFeed={this.loadMoreFeed.bind(this)}
+              globalFeed={this.props.globalFeed}
+              userInfo={this.props.userInfo}
+              balance={this.props.balance}
+              friends={this.props.friends}
+              {...props}
               />
           }
         </div>
@@ -225,18 +213,19 @@ class App extends React.Component {
     const ProfileWithProps = (routeProps) => {
       return (
         <div>
-          {!this.state.isLoggedIn 
+          {!this.props.isLoggedIn 
             ? <LoggedOutHome 
-                isLoggedIn={this.state.isLoggedIn} 
+                isLoggedIn={this.props.isLoggedIn} 
                 logUserIn={this.logUserIn.bind(this)}
                 {...routeProps}
               />
-            : <Profile 
+            : 
+            <Profile 
                 key={routeProps.location.pathname}
                 refreshUserData={this.refreshUserData.bind(this)}
-                isLoggedIn={this.state.isLoggedIn} 
+                isLoggedIn={this.props.isLoggedIn} 
                 logUserOut={this.logUserOut.bind(this)}
-                userInfo={this.state.userInfo}
+                userInfo={this.props.userInfo}
                 {...routeProps}
               />
           }
@@ -269,13 +258,18 @@ class App extends React.Component {
 
 
 const mapStateToProps = state => {
-  console.log('app', state);
   return {
-    user: state.user,
-    logOut,
-    logIn,
     balance: state.balance,
-    userInfo,
+    userInfo: state.userInfo,
+    isLoggedIn: state.isLoggedIn,
+    globalFeed: state.globalFeed,
+    userFeed: state.userFeed,
+    actionLogOut,
+    actionLogIn,
+    actionBalance,
+    actionUserInfo,
+    actionPrependFeed,
+    actionLoadMoreFeed
   };
 }
 
