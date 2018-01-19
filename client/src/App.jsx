@@ -162,7 +162,6 @@ class App extends React.Component {
         this.props.dispatch(getFriends(response.data));
       })
       .catch((err) => {
-        // console.log('why do you error')
         console.error(err);
       });
   }
@@ -175,13 +174,13 @@ class App extends React.Component {
      this.loadUserData(userId);
    }
 
-  logUserOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(() => {
-      console.log('User signed out.');
-      this.props.dispatch(actionLogOut())
-    })
-  }
+  // logUserOut() {
+  //   var auth2 = gapi.auth2.getAuthInstance();
+  //   auth2.signOut().then(() => {
+  //     console.log('User signed out.');
+  //     this.props.dispatch(actionLogOut())
+  //   })
+  // }
 
   render () {
     const HomeWithProps = (props) => {
@@ -195,7 +194,7 @@ class App extends React.Component {
             : 
             <Home
               refreshUserData={this.refreshUserData.bind(this)}
-              logUserOut={this.logUserOut.bind(this)}
+              // logUserOut={this.logUserOut.bind(this)}
               loadMoreFeed={this.loadMoreFeed.bind(this)}
               {...props}
               />
@@ -218,7 +217,7 @@ class App extends React.Component {
                 key={routeProps.location.pathname}
                 refreshUserData={this.refreshUserData.bind(this)}
                 isLoggedIn={this.props.isLoggedIn} 
-                logUserOut={this.logUserOut.bind(this)}
+                // logUserOut={this.logUserOut.bind(this)}
                 userInfo={this.props.userInfo}
                 {...routeProps}
               />
@@ -248,7 +247,6 @@ class App extends React.Component {
 }
 
 
-// ReactDOM.render(<App />, document.getElementById('app'));
 
 
 const mapStateToProps = state => {
@@ -268,11 +266,6 @@ const mapStateToProps = state => {
   };
 }
 
-// const mapDistpatchToProps = dispatch => {
-//   return {
-
-//   };
-// }
 
 
 export default connect(mapStateToProps)(App);
