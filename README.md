@@ -1,13 +1,13 @@
 # Project Name
 
-> Pithy project description
+> Digital money exchange and social media chat platform
 
 ## Team
 
-  - teamMember
-  - teamMember
-  - teamMember
-  - teamMember
+  - Albert Wong
+  - Aaron Pietsch
+  - William Putnam
+  - Larry Chang
 
 ## Table of Contents
 
@@ -24,12 +24,11 @@
 > Some usage instructions
 
 ## Requirements
-
-- Node 6.4.x
-- Redis 2.6.x
-- Postgresql 9.1.x
-- etc
-- etc
+- React
+- Redux
+- Node
+- Express
+- Postgresql
 
 ## Development
 
@@ -42,10 +41,6 @@ npm install -g bower
 npm install
 bower install
 ```
-
-### Roadmap
-
-View the project roadmap [here](LINK_TO_DOC)
 
 
 ## Contributing
